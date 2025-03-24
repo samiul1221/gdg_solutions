@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -60,10 +59,12 @@ class _WeatherState extends State<Weather> {
         });
       }
     } catch (e) {
-      setState(() {
-        errorMessage = 'Error getting location: $e';
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          errorMessage = 'Error getting location: $e';
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -92,6 +93,30 @@ class _WeatherState extends State<Weather> {
       setState(() {
         errorMessage = 'Error fetching weather data: $e';
       });
+    }
+  }
+
+  // Add this new method to get state information
+  Future<void> _fetchLocationDetails(double lat, double lon) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'https://api.openweathermap.org/geo/1.0/reverse?lat=$lat&lon=$lon&limit=1&appid=$apiKey',
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data.isNotEmpty) {
+          setState(() {
+            // Add state information to weatherData
+            weatherData!['state'] = data[0]['state'] ?? '';
+          });
+        }
+      }
+    } catch (e) {
+      // Just log the error - we'll handle the UI regardless
+      print('Error getting state details: $e');
     }
   }
 
@@ -210,26 +235,26 @@ class _WeatherState extends State<Weather> {
               : RefreshIndicator(
                 onRefresh: _getLocationAndWeather,
                 color: colorScheme.tertiary,
-                child: SingleChildScrollView(
+                child: ListView(
                   physics: AlwaysScrollableScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (weatherData != null)
-                        _buildCurrentWeather(colorScheme),
-                      if (errorMessage.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            errorMessage,
-                            style: TextStyle(color: colorScheme.onPrimaryFixed),
-                          ),
+                  padding: EdgeInsets.only(bottom: 16),
+                  children: [
+                    if (weatherData != null) _buildCurrentWeather(colorScheme),
+                    if (errorMessage.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          errorMessage,
+                          style: TextStyle(color: colorScheme.onPrimaryFixed),
                         ),
-                      if (weatherData != null) _buildFarmingAdvice(colorScheme),
-                      if (forecastData != null) _buildForecast(colorScheme),
-                      SizedBox(height: 16),
-                    ],
-                  ),
+                      ),
+                    if (weatherData != null) _buildFarmingAdvice(colorScheme),
+                    if (forecastData != null) _buildHourlyForecast(colorScheme),
+                    if (forecastData != null) _buildDailyForecast(colorScheme),
+                    SizedBox(
+                      height: 60,
+                    ), // Add padding at the bottom for navigation bar
+                  ],
                 ),
               ),
     );
@@ -261,25 +286,38 @@ class _WeatherState extends State<Weather> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    cityName,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onPrimary,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      cityName,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.onPrimary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  Text(
-                    DateFormat('EEEE, d MMMM').format(DateTime.now()),
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: colorScheme.onPrimary.withOpacity(0.8),
+                    // Add state name here
+                    if (weather.containsKey('state') && weather['state'] != '')
+                      Text(
+                        weather['state'],
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: colorScheme.onPrimary.withOpacity(0.9),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    Text(
+                      DateFormat('EEEE, d MMMM').format(DateTime.now()),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: colorScheme.onPrimary.withOpacity(0.8),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Container(
                 padding: EdgeInsets.all(8),
@@ -308,25 +346,29 @@ class _WeatherState extends State<Weather> {
                   color: colorScheme.onPrimary,
                 ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    weatherMain,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      color: colorScheme.onPrimary,
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      weatherMain,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: colorScheme.onPrimary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  Text(
-                    weatherDesc,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: colorScheme.onPrimary.withOpacity(0.8),
+                    Text(
+                      weatherDesc,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: colorScheme.onPrimary.withOpacity(0.8),
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
@@ -334,7 +376,7 @@ class _WeatherState extends State<Weather> {
           Container(
             padding: EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(
-              color: colorScheme.onPrimaryContainer,
+              color: colorScheme.onPrimaryContainer.withOpacity(0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -389,23 +431,7 @@ class _WeatherState extends State<Weather> {
     );
   }
 
-  Widget _buildForecast(ColorScheme colorScheme) {
-    // Group forecast by day
-    Map<String, List<dynamic>> dailyForecasts = {};
-
-    for (var forecast in forecastData!) {
-      final dateTime = DateTime.fromMillisecondsSinceEpoch(
-        forecast['dt'] * 1000,
-      );
-      final day = DateFormat('yyyy-MM-dd').format(dateTime);
-
-      if (!dailyForecasts.containsKey(day)) {
-        dailyForecasts[day] = [];
-      }
-
-      dailyForecasts[day]!.add(forecast);
-    }
-
+  Widget _buildHourlyForecast(ColorScheme colorScheme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -480,7 +506,30 @@ class _WeatherState extends State<Weather> {
             },
           ),
         ),
+      ],
+    );
+  }
 
+  Widget _buildDailyForecast(ColorScheme colorScheme) {
+    // Group forecast by day
+    Map<String, List<dynamic>> dailyForecasts = {};
+
+    for (var forecast in forecastData!) {
+      final dateTime = DateTime.fromMillisecondsSinceEpoch(
+        forecast['dt'] * 1000,
+      );
+      final day = DateFormat('yyyy-MM-dd').format(dateTime);
+
+      if (!dailyForecasts.containsKey(day)) {
+        dailyForecasts[day] = [];
+      }
+
+      dailyForecasts[day]!.add(forecast);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
           child: Text(
@@ -492,7 +541,6 @@ class _WeatherState extends State<Weather> {
             ),
           ),
         ),
-
         ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
@@ -540,40 +588,55 @@ class _WeatherState extends State<Weather> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    DateFormat('EEEE').format(dateTime),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: colorScheme.onSurface,
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      DateFormat('EEEE').format(dateTime),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: colorScheme.onSurface,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Row(
-                    children: [
-                      Container(
-                        width: 50,
-                        height: 50,
-                        alignment: Alignment.center,
-                        child: FittedBox(
-                          child: Text(_getWeatherEmoji(iconCode)),
+                  Expanded(
+                    flex: 3,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          alignment: Alignment.center,
+                          child: FittedBox(
+                            child: Text(_getWeatherEmoji(iconCode)),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 8),
-                      Text(
-                        mainWeather,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: colorScheme.onSurface.withOpacity(0.8),
+                        SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            mainWeather,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: colorScheme.onSurface.withOpacity(0.8),
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  Text(
-                    '${avgTemp.toStringAsFixed(1)}°C',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: colorScheme.onSurface,
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      '${avgTemp.toStringAsFixed(1)}°C',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: colorScheme.onSurface,
+                      ),
+                      textAlign: TextAlign.end,
                     ),
                   ),
                 ],

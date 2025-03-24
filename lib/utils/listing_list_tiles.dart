@@ -1,130 +1,147 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+// import 'detail_page_read_only.dart';
+import 'package:gdg_solution/utils/farmer_view/Detail_Page_read_only.dart';
+import 'package:gdg_solution/utils/farmer_view/edit_page.dart';
+
 
 class ListingListTiles extends StatelessWidget {
-  bool isOffered;
-  String Crop_name;
-  String Date_of_listing;
-  double your_price;
-  double government_price;
-  double? Offered_price;
-  String path_image;
-  double quantity;
+  final bool isOffered;
+  final String cropName;
+  final String dateOfListing;
+  final double yourPrice;
+  final double governmentPrice;
+  final double? offeredPrice;
+  final String pathImage;
+  final double quantity;
+  final Function onDelete;
+
   ListingListTiles({
-    super.key,
+    Key? key,
     required this.isOffered,
-    required this.Crop_name,
-    required this.Date_of_listing,
-    required this.your_price,
-    required this.government_price,
-    this.Offered_price,
+    required this.cropName,
+    required this.dateOfListing,
+    required this.yourPrice,
+    required this.governmentPrice,
+    this.offeredPrice,
     required this.quantity,
-    required this.path_image
-  });
+    required this.pathImage,
+    required this.onDelete,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
-    return Slidable(
-      endActionPane: ActionPane(
-        motion: const StretchMotion(),
-        // extentRatio: ,
-        children: [
-          SlidableAction(
-            label: "Delete",
-            onPressed: (context) {
-              // Delete ka Option
-              print("hello");
-            },
-            icon: Icons.delete,
-            backgroundColor: colors.onPrimaryFixed,
-            // foregroundColor: ,
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ],
-      ),
-
-      child: Container(
-        // height: 65,
-        decoration: BoxDecoration(
-          // color: Colors.amber, // Background color
-          color:
-              isOffered
-                  ? colors.onSecondaryContainer
-                  : colors.onSurfaceVariant, // Background color
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Color(0xFFD3D3D3),
-              // color: Colors.,
-              spreadRadius: 2,
-              blurRadius: 2,
-              offset: Offset(0, 0),
+    return GestureDetector(
+      onTap: () {
+        if (isOffered) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ListingDetailPage(
+                isOffered: isOffered,
+                cropName: cropName,
+                dateOfListing: dateOfListing,
+                yourPrice: yourPrice,
+                governmentPrice: governmentPrice,
+                offeredPrice: offeredPrice,
+                quantity: quantity,
+                pathImage: pathImage,
+              ),
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditListingPage(
+                cropName: cropName,
+                dateOfListing: dateOfListing,
+                yourPrice: yourPrice,
+                governmentPrice: governmentPrice,
+                quantity: quantity,
+                pathImage: pathImage,
+              ),
+            ),
+          );
+        }
+      },
+      child: Slidable(
+        endActionPane: ActionPane(
+          motion: const StretchMotion(),
+          children: [
+            SlidableAction(
+              label: "Delete",
+              onPressed: (context) {
+                onDelete();
+              },
+              icon: Icons.delete,
+              backgroundColor: colors.onPrimaryFixed,
+              borderRadius: BorderRadius.circular(8),
             ),
           ],
         ),
-        margin: EdgeInsets.all(8),
-        padding: EdgeInsets.all(10),
-        child: Row(
-          mainAxisAlignment:
-              MainAxisAlignment
-                  .spaceBetween, // Ensures space between left and right content
-          children: [
-            // Row to hold the Avatar and List1 together on the left
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 25,
-                  backgroundImage: AssetImage(
-                    // 'lib/assets/crops/grain_crop1.png',
-                    path_image
+        child: Container(
+          decoration: BoxDecoration(
+            color: isOffered ? colors.onSecondaryContainer : colors.onSurfaceVariant,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0xFFD3D3D3),
+                spreadRadius: 2,
+                blurRadius: 2,
+                offset: Offset(0, 0),
+              ),
+            ],
+          ),
+          margin: EdgeInsets.all(8),
+          padding: EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 25,
+                    backgroundImage: AssetImage(pathImage),
                   ),
-                ),
-                SizedBox(width: 8), // Spacing between avatar and text
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          Crop_name,
-                          style: TextStyle(
-                            color: colors.onSurface,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w500,
-                            decoration: TextDecoration.none,
+                  SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            cropName,
+                            style: TextStyle(
+                              color: colors.onSurface,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w500,
+                              decoration: TextDecoration.none,
+                            ),
                           ),
-                        ),
-                        // Spacer(),
-                        Text(" | $quantity kg", style: TextStyle(fontSize: 20)),
-                      ],
-                    ),
-
-                    Text(
-                      Date_of_listing,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        decoration: TextDecoration.none,
+                          Text(" | $quantity kg", style: TextStyle(fontSize: 20)),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-
-            // Use Spacer or Expanded to push the column to the far right
-            SizedBox(width: 12),
-
-            // Column for YP and GP at the end
-            Container(
-              margin: EdgeInsets.only(right: 6),
-              child:
-                  isOffered
-                      ? Row(
-                        // mainAxisAlignment: MainAxisAlignment.end,
+                      Text(
+                        dateOfListing,
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(width: 12),
+              Container(
+                margin: EdgeInsets.only(right: 6),
+                child: isOffered
+                    ? Row(
                         children: [
                           Column(
                             children: [
@@ -137,7 +154,7 @@ class ListingListTiles extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                "$your_price",
+                                "$yourPrice",
                                 style: TextStyle(
                                   fontSize: 23,
                                   color: Colors.green,
@@ -148,7 +165,6 @@ class ListingListTiles extends StatelessWidget {
                           ),
                           SizedBox(width: 12),
                           Column(
-                            // crossAxisAlignment: CrossAxisAlignment,
                             children: [
                               Text(
                                 "Offered",
@@ -157,9 +173,8 @@ class ListingListTiles extends StatelessWidget {
                                   color: Colors.grey,
                                 ),
                               ),
-                              // SizedBox(height: 5),
                               Text(
-                                "$Offered_price",
+                                "$offeredPrice",
                                 style: TextStyle(
                                   fontSize: 23,
                                   color: Colors.grey,
@@ -169,13 +184,11 @@ class ListingListTiles extends StatelessWidget {
                           ),
                         ],
                       )
-                      : Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment
-                                .center, // Align text to the right in the column
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            "$your_price",
+                            "$yourPrice",
                             style: TextStyle(
                               fontSize: 24,
                               color: Colors.green,
@@ -183,13 +196,14 @@ class ListingListTiles extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "$government_price",
+                            "$governmentPrice",
                             style: TextStyle(fontSize: 18, color: Colors.grey),
                           ),
                         ],
                       ),
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );

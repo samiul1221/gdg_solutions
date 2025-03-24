@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:gdg_solution/farmer/farmer_awareness.dart';
 import 'package:gdg_solution/farmer/listing_page.dart';
 import 'package:gdg_solution/farmer/mainNav.dart';
-import 'package:gdg_solution/farmer/schemes.dart';
 import 'package:gdg_solution/farmer/weather.dart';
 import 'package:lottie/lottie.dart';
-import 'package:gdg_solution/utils/crop_data_class.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String username;
+  final String role;
+
+  HomePage({required this.username, required this.role});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -17,17 +18,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   String? _selected_Lang = "English";
-  // final globalData = GlobalData();
-  // GlobalData.myVariable;
-
-  // glo_var.selected_Lang
-  // glo_var.GlobalData
   final List<String> Lang_Support = ["English", "Hindi"];
 
   late AnimationController _my_LottieAnimationController;
+  late String username;
+  late String role;
+
   @override
   void initState() {
-    // TODO: implement initState
+    username = widget.username;
+    role = widget.role;
     super.initState();
     _my_LottieAnimationController = AnimationController(
       vsync: this,
@@ -55,22 +55,12 @@ class _HomePageState extends State<HomePage>
     '/farmer_awareness_page',
     '/weather_page',
   ];
+  
+  late final List<Widget> _pages;
 
-  // for bottom Nav bar
-  // int _selectedIndex = 0;
-
-  final List<Widget> _pages = [
-    ListingPage(),
-    Schemes(),
-    FarmerAwareness(),
-    Weather(),
-  ];
-
-  // void _onItemTapped(int index) {
-  //   setState(() {
-  //     _selectedIndex = index;
-  //   });
-  // }
+  @override
+  void initState() {
+    username =
   void voice_assistant() {
     print("clicked");
   }
@@ -78,6 +68,9 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    // Get screen size to make layout responsive
+    final screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: colors.surface,
       appBar: AppBar(
@@ -86,19 +79,28 @@ class _HomePageState extends State<HomePage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Welcome!", style: TextStyle(fontSize: 30)),
-                  Text("John Doe", style: TextStyle(fontSize: 16)),
-                ],
+              // Use Expanded to prevent overflow in username
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Welcome!",
+                      style: TextStyle(fontSize: 30),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      widget.username,
+                      style: TextStyle(fontSize: 16),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
               DropdownButton<String>(
                 value: _selected_Lang,
                 borderRadius: BorderRadius.circular(15),
-                // elevation: 15,x
-                // hint: Text("Select"),
                 underline: Container(),
                 icon: Icon(Icons.keyboard_arrow_down_rounded),
                 items:
@@ -118,68 +120,77 @@ class _HomePageState extends State<HomePage>
             ],
           ),
         ),
-        // leading: Container(color: Colors.amber),
         actions: [],
       ),
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(height: 80),
-            GridView.builder(
-              shrinkWrap: true,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+            SizedBox(height: 40), // Reduced height to give more space for grid
+            Expanded(
+              child: GridView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1.0, // Make cells square
+                  crossAxisSpacing: 10, // Add spacing between columns
+                  mainAxisSpacing: 10, // Add spacing between rows
+                ),
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      NavigationHelper.navigateToTab(index + 1, context);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.lightBlue.shade50,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: colors.onSurface.withAlpha(30),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Use Expanded for Lottie to take available space
+                          Expanded(
+                            flex: 3, // 75% of space for animation
+                            child: Lottie.asset(
+                              lottie_icon[index],
+                              fit: BoxFit.contain, // Ensure animation fits
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          // Use Expanded for text to take remaining space
+                          Expanded(
+                            flex: 1, // 25% of space for text
+                            child: Center(
+                              child: Text(
+                                tileName[index],
+                                style: TextStyle(
+                                  fontSize: 16, // Slightly smaller font
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                                maxLines:
+                                    2, // Allow up to 2 lines for longer text
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                itemCount: 4,
               ),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    NavigationHelper.navigateToTab(index + 1, context);
-
-                    // MainNavigation(selectedIndex: 2);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    margin: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: Colors.lightBlue.shade50,
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: colors.onSurface.withAlpha(30),
-                          // color: Colors.,
-                          spreadRadius: 1,
-                          blurRadius: 3,
-                          offset: Offset(0, 0),
-                        ),
-                      ],
-                    ),
-
-                    // width: double.infinity,
-                    // Add this to allow the container to expand vertically
-                    // constraints: BoxConstraints(minHeight: 100),
-                    child: Column(
-                      children: [
-                        Container(
-                          // Add height constraint or use Expanded for the Lottie animation
-                          height: 120, // Adjust this value based on your needs
-                          child: Lottie.asset(lottie_icon[index]),
-                        ),
-                        // Add some spacing between animation and text
-                        SizedBox(height: 8),
-                        // Uncomment this to show your text
-                        Text(
-                          tileName[index],
-                          style: TextStyle(fontSize: 20),
-                          // Add text overflow handling
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-              itemCount: 4,
             ),
           ],
         ),

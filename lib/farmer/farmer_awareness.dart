@@ -8,10 +8,11 @@ class FarmerAwareness extends StatefulWidget {
   _FarmerAwarenessState createState() => _FarmerAwarenessState();
 }
 
-class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProviderStateMixin {
+class _FarmerAwarenessState extends State<FarmerAwareness>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _currentIndex = 0;
-  
+
   @override
   void initState() {
     super.initState();
@@ -22,7 +23,7 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
       });
     });
   }
-  
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -33,7 +34,7 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
   String _getCurrentSeason() {
     final now = DateTime.now();
     final month = now.month;
-    
+
     // Adjust these ranges based on your region's seasons
     if (month >= 3 && month <= 5) return 'Spring';
     if (month >= 6 && month <= 8) return 'Summer';
@@ -44,9 +45,9 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
   Future<void> _launchUrl(String url) async {
     final Uri uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not launch $url')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Could not launch $url')));
     }
   }
 
@@ -54,7 +55,7 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final currentSeason = _getCurrentSeason();
-    
+
     return Scaffold(
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
@@ -96,10 +97,10 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
     final colorScheme = Theme.of(context).colorScheme;
     final now = DateTime.now();
     final formatter = DateFormat('MMMM yyyy');
-    
+
     // Content based on current season
     List<Map<String, dynamic>> seasonalTips = _getSeasonalTips(season);
-    
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(16),
       child: Column(
@@ -109,7 +110,10 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [colorScheme.tertiary, colorScheme.tertiary.withOpacity(0.7)],
+                colors: [
+                  colorScheme.tertiary,
+                  colorScheme.tertiary.withOpacity(0.7),
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -175,25 +179,29 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
         return [
           {
             'title': 'Soil Preparation',
-            'description': 'Test soil pH and nutrient levels. Add organic matter and necessary amendments based on test results.',
+            'description':
+                'Test soil pH and nutrient levels. Add organic matter and necessary amendments based on test results.',
             'icon': Icons.landscape,
             'priority': 'High',
           },
           {
             'title': 'Planting Schedule',
-            'description': 'Begin planting early season crops like peas, spinach, and radishes. Start seedlings indoors for summer crops.',
+            'description':
+                'Begin planting early season crops like peas, spinach, and radishes. Start seedlings indoors for summer crops.',
             'icon': Icons.grass,
             'priority': 'High',
           },
           {
             'title': 'Pest Monitoring',
-            'description': 'Set up pest traps and monitoring systems. Watch for early signs of common spring pests like aphids and cutworms.',
+            'description':
+                'Set up pest traps and monitoring systems. Watch for early signs of common spring pests like aphids and cutworms.',
             'icon': Icons.bug_report,
             'priority': 'Medium',
           },
           {
             'title': 'Equipment Maintenance',
-            'description': 'Service all farming equipment before the busy season begins. Check irrigation systems for leaks or blockages.',
+            'description':
+                'Service all farming equipment before the busy season begins. Check irrigation systems for leaks or blockages.',
             'icon': Icons.build,
             'priority': 'Medium',
           },
@@ -202,25 +210,29 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
         return [
           {
             'title': 'Water Management',
-            'description': 'Implement efficient irrigation practices during hot weather. Water deeply but less frequently to encourage deep root growth.',
+            'description':
+                'Implement efficient irrigation practices during hot weather. Water deeply but less frequently to encourage deep root growth.',
             'icon': Icons.water_drop,
             'priority': 'High',
           },
           {
             'title': 'Heat Protection',
-            'description': 'Use shade cloth for sensitive crops. Mulch around plants to retain soil moisture and reduce soil temperature.',
+            'description':
+                'Use shade cloth for sensitive crops. Mulch around plants to retain soil moisture and reduce soil temperature.',
             'icon': Icons.wb_sunny,
             'priority': 'High',
           },
           {
             'title': 'Disease Prevention',
-            'description': 'Monitor for fungal diseases that thrive in humid conditions. Ensure proper air circulation between plants.',
+            'description':
+                'Monitor for fungal diseases that thrive in humid conditions. Ensure proper air circulation between plants.',
             'icon': Icons.healing,
             'priority': 'Medium',
           },
           {
             'title': 'Harvesting Schedule',
-            'description': 'Harvest crops in the early morning when temperatures are cooler. Process or store harvested crops promptly.',
+            'description':
+                'Harvest crops in the early morning when temperatures are cooler. Process or store harvested crops promptly.',
             'icon': Icons.shopping_basket,
             'priority': 'Medium',
           },
@@ -229,25 +241,29 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
         return [
           {
             'title': 'Soil Enrichment',
-            'description': 'Plant cover crops to prevent soil erosion and add nutrients. Consider green manures like clover or winter rye.',
+            'description':
+                'Plant cover crops to prevent soil erosion and add nutrients. Consider green manures like clover or winter rye.',
             'icon': Icons.compost,
             'priority': 'High',
           },
           {
             'title': 'Crop Storage',
-            'description': 'Prepare storage facilities for harvested crops. Ensure proper temperature and humidity controls are in place.',
+            'description':
+                'Prepare storage facilities for harvested crops. Ensure proper temperature and humidity controls are in place.',
             'icon': Icons.inventory_2,
             'priority': 'High',
           },
           {
             'title': 'Winter Preparation',
-            'description': 'Protect perennial plants with mulch. Clean and store tools and equipment properly for the winter.',
+            'description':
+                'Protect perennial plants with mulch. Clean and store tools and equipment properly for the winter.',
             'icon': Icons.ac_unit,
             'priority': 'Medium',
           },
           {
             'title': 'Market Planning',
-            'description': "Analyze this year's market performance and begin planning for next season's crops and marketing strategies.",
+            'description':
+                "Analyze this year's market performance and begin planning for next season's crops and marketing strategies.",
             'icon': Icons.trending_up,
             'priority': 'Medium',
           },
@@ -256,25 +272,29 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
         return [
           {
             'title': 'Crop Planning',
-            'description': 'Review last season\'s notes and plan crop rotations. Order seeds and supplies for the upcoming growing season.',
+            'description':
+                'Review last season\'s notes and plan crop rotations. Order seeds and supplies for the upcoming growing season.',
             'icon': Icons.event_note,
             'priority': 'High',
           },
           {
             'title': 'Infrastructure Maintenance',
-            'description': 'Repair buildings, fences, and other infrastructure. Perform maintenance on equipment while workload is lighter.',
+            'description':
+                'Repair buildings, fences, and other infrastructure. Perform maintenance on equipment while workload is lighter.',
             'icon': Icons.home_repair_service,
             'priority': 'Medium',
           },
           {
             'title': 'Soil Health',
-            'description': 'Review soil test results and plan amendments. Research new sustainable practices to implement in spring.',
+            'description':
+                'Review soil test results and plan amendments. Research new sustainable practices to implement in spring.',
             'icon': Icons.spa,
             'priority': 'Medium',
           },
           {
             'title': 'Education & Training',
-            'description': 'Attend agricultural workshops and conferences. Update knowledge on new farming techniques and technologies.',
+            'description':
+                'Attend agricultural workshops and conferences. Update knowledge on new farming techniques and technologies.',
             'icon': Icons.school,
             'priority': 'Medium',
           },
@@ -286,7 +306,7 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
 
   Widget _buildTipCard(BuildContext context, Map<String, dynamic> tip) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     Color priorityColor;
     switch (tip['priority']) {
       case 'High':
@@ -298,7 +318,7 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
       default:
         priorityColor = Colors.green.shade700;
     }
-    
+
     return Container(
       margin: EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -366,7 +386,7 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
 
   Widget _buildWeatherAlertCard(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -412,7 +432,12 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MainNavigation(selectedIndex: 4),
+                  builder:
+                      (context) => MainNavigation(
+                        selectedIndex: 4,
+                        username: 'farmer', // Replace with actual username
+                        role: 'farmer', // Replace with actual role
+                      ),
                 ),
               );
             },
@@ -430,7 +455,7 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
 
   Widget _buildMarketInsightsCard(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -463,25 +488,25 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
           ),
           SizedBox(height: 12),
           _buildMarketItem(
-            context, 
-            crop: 'Rice', 
-            trend: 'up', 
+            context,
+            crop: 'Rice',
+            trend: 'up',
             price: '₹2,100/quintal',
-            change: '+5.2%'
+            change: '+5.2%',
           ),
           _buildMarketItem(
-            context, 
-            crop: 'Wheat', 
-            trend: 'down', 
+            context,
+            crop: 'Wheat',
+            trend: 'down',
             price: '₹1,950/quintal',
-            change: '-2.1%'
+            change: '-2.1%',
           ),
           _buildMarketItem(
-            context, 
-            crop: 'Soybeans', 
-            trend: 'up', 
+            context,
+            crop: 'Soybeans',
+            trend: 'up',
             price: '₹3,800/quintal',
-            change: '+3.7%'
+            change: '+3.7%',
           ),
           SizedBox(height: 12),
           Align(
@@ -505,14 +530,15 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
     );
   }
 
-  Widget _buildMarketItem(BuildContext context, {
-    required String crop, 
-    required String trend, 
+  Widget _buildMarketItem(
+    BuildContext context, {
+    required String crop,
+    required String trend,
     required String price,
     required String change,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Padding(
       padding: EdgeInsets.only(bottom: 8),
       child: Row(
@@ -538,9 +564,10 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: trend == 'up' 
-                      ? Colors.green.withOpacity(0.2) 
-                      : Colors.red.withOpacity(0.2),
+                  color:
+                      trend == 'up'
+                          ? Colors.green.withOpacity(0.2)
+                          : Colors.red.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Row(
@@ -571,55 +598,59 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
 
   Widget _buildTechniquesTab(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return ListView(
       padding: EdgeInsets.all(16),
       children: [
         _buildTechniqueCard(
           context,
           title: 'Sustainable Farming',
-          description: 'Sustainable farming practices focus on producing crops and livestock while reducing environmental impact and maintaining economic viability.',
+          description:
+              'Sustainable farming practices focus on producing crops and livestock while reducing environmental impact and maintaining economic viability.',
           steps: [
             'Implement crop rotation to maintain soil health',
             'Use organic fertilizers and natural pest control',
             'Practice water conservation techniques',
-            'Adopt integrated pest management (IPM)'
+            'Adopt integrated pest management (IPM)',
           ],
           icon: Icons.eco,
         ),
         _buildTechniqueCard(
           context,
           title: 'Precision Agriculture',
-          description: 'Utilize technology to optimize field-level management of crop farming.',
+          description:
+              'Utilize technology to optimize field-level management of crop farming.',
           steps: [
             'Use soil sensors for moisture monitoring',
             'Implement GPS-guided equipment',
             'Analyze satellite imagery for crop health',
-            'Apply variable-rate technology for inputs'
+            'Apply variable-rate technology for inputs',
           ],
           icon: Icons.precision_manufacturing,
         ),
         _buildTechniqueCard(
           context,
           title: 'Vertical Farming',
-          description: 'Grow crops in vertically stacked layers using controlled environment agriculture.',
+          description:
+              'Grow crops in vertically stacked layers using controlled environment agriculture.',
           steps: [
             'Optimize space utilization',
             'Use hydroponic or aeroponic systems',
             'Control temperature and lighting',
-            'Implement automated nutrient delivery'
+            'Implement automated nutrient delivery',
           ],
           icon: Icons.vertical_align_center,
         ),
         _buildTechniqueCard(
           context,
           title: 'Organic Farming',
-          description: 'Production system that avoids synthetic inputs and relies on ecological processes.',
+          description:
+              'Production system that avoids synthetic inputs and relies on ecological processes.',
           steps: [
             'Use compost and green manure',
             'Practice biological pest control',
             'Maintain biodiversity',
-            'Follow certification standards'
+            'Follow certification standards',
           ],
           icon: Icons.spa,
         ),
@@ -627,14 +658,15 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
     );
   }
 
-  Widget _buildTechniqueCard(BuildContext context, {
+  Widget _buildTechniqueCard(
+    BuildContext context, {
     required String title,
     required String description,
     required List<String> steps,
     required IconData icon,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -685,29 +717,33 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
                   ),
                 ),
                 SizedBox(height: 8),
-                ...steps.map((step) => Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.check_circle,
-                        size: 16,
-                        color: colorScheme.tertiary,
-                      ),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          step,
-                          style: TextStyle(
-                            color: colorScheme.onSurface.withOpacity(0.8),
-                            height: 1.5,
-                          ),
+                ...steps
+                    .map(
+                      (step) => Padding(
+                        padding: EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              size: 16,
+                              color: colorScheme.tertiary,
+                            ),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                step,
+                                style: TextStyle(
+                                  color: colorScheme.onSurface.withOpacity(0.8),
+                                  height: 1.5,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                )).toList(),
+                    )
+                    .toList(),
               ],
             ),
           ),
@@ -718,27 +754,25 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
 
   Widget _buildResourcesTab(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return ListView(
       padding: EdgeInsets.all(16),
       children: [
         _buildResourceCard(
           context,
           title: 'Government Schemes',
-          description: 'Access information about agricultural subsidies and government programs',
+          description:
+              'Access information about agricultural subsidies and government programs',
           links: [
-            {
-              'title': 'PM-KISAN Scheme',
-              'url': 'https://pmkisan.gov.in/'
-            },
+            {'title': 'PM-KISAN Scheme', 'url': 'https://pmkisan.gov.in/'},
             {
               'title': 'Soil Health Card',
-              'url': 'https://soilhealth.dac.gov.in/'
+              'url': 'https://soilhealth.dac.gov.in/',
             },
             {
               'title': 'National Mission on Agriculture',
-              'url': 'https://nmsa.dac.gov.in/'
-            }
+              'url': 'https://nmsa.dac.gov.in/',
+            },
           ],
           icon: Icons.agriculture,
         ),
@@ -749,16 +783,16 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
           links: [
             {
               'title': 'Crop Cultivation Guide',
-              'url': 'https://www.india.gov.in/topics/agriculture/crops'
+              'url': 'https://www.india.gov.in/topics/agriculture/crops',
             },
             {
               'title': 'Pest Management Handbook',
-              'url': 'https://ppqs.gov.in/'
+              'url': 'https://ppqs.gov.in/',
             },
             {
               'title': 'Organic Farming Manual',
-              'url': 'https://pgsindia-ncof.gov.in/'
-            }
+              'url': 'https://pgsindia-ncof.gov.in/',
+            },
           ],
           icon: Icons.library_books,
         ),
@@ -769,16 +803,10 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
           links: [
             {
               'title': 'e-NAM Market Platform',
-              'url': 'https://www.enam.gov.in/'
+              'url': 'https://www.enam.gov.in/',
             },
-            {
-              'title': 'Agri Market Prices',
-              'url': 'https://agmarknet.gov.in/'
-            },
-            {
-              'title': 'Export Opportunities',
-              'url': 'https://apeda.gov.in/'
-            }
+            {'title': 'Agri Market Prices', 'url': 'https://agmarknet.gov.in/'},
+            {'title': 'Export Opportunities', 'url': 'https://apeda.gov.in/'},
           ],
           icon: Icons.analytics,
         ),
@@ -786,14 +814,15 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
     );
   }
 
-  Widget _buildResourceCard(BuildContext context, {
+  Widget _buildResourceCard(
+    BuildContext context, {
     required String title,
     required String description,
     required List<Map<String, String>> links,
     required IconData icon,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.all(16),
@@ -846,22 +875,26 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
             ],
           ),
           SizedBox(height: 12),
-          ...links.map((link) => ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(
-              Icons.link,
-              size: 20,
-              color: colorScheme.tertiary,
-            ),
-            title: Text(
-              link['title']!,
-              style: TextStyle(
-                color: colorScheme.tertiary,
-                decoration: TextDecoration.underline,
-              ),
-            ),
-            onTap: () => _launchUrl(link['url']!),
-          )).toList(),
+          ...links
+              .map(
+                (link) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    Icons.link,
+                    size: 20,
+                    color: colorScheme.tertiary,
+                  ),
+                  title: Text(
+                    link['title']!,
+                    style: TextStyle(
+                      color: colorScheme.tertiary,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                  onTap: () => _launchUrl(link['url']!),
+                ),
+              )
+              .toList(),
         ],
       ),
     );
@@ -869,14 +902,15 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
 
   Widget _buildTrainingTab(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return ListView(
       padding: EdgeInsets.all(16),
       children: [
         _buildTrainingCard(
           context,
           title: 'Krishi Vigyan Kendras',
-          description: 'Hands-on training programs at agricultural science centers',
+          description:
+              'Hands-on training programs at agricultural science centers',
           contact: 'Visit kvk.icar.gov.in',
           icon: Icons.school,
         ),
@@ -905,14 +939,15 @@ class _FarmerAwarenessState extends State<FarmerAwareness> with SingleTickerProv
     );
   }
 
-  Widget _buildTrainingCard(BuildContext context, {
+  Widget _buildTrainingCard(
+    BuildContext context, {
     required String title,
     required String description,
     required String contact,
     required IconData icon,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.all(16),

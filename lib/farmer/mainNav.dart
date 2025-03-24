@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gdg_solution/farmer/farmer_awareness.dart';
-import 'package:gdg_solution/farmer/home_page.dart';
+import 'package:gdg_solution/farmer/home_page.dart' as farmer;
 import 'package:gdg_solution/farmer/listing_page.dart';
-import 'package:gdg_solution/farmer/schemes.dart';
 import 'package:gdg_solution/farmer/weather.dart';
 
 // Create a global key to access the navigation state from anywhere
@@ -11,7 +10,15 @@ final GlobalKey<_MainNavigationState> mainNavigationKey =
 
 class MainNavigation extends StatefulWidget {
   final int selectedIndex;
-  MainNavigation({this.selectedIndex = 0}) : super(key: mainNavigationKey);
+  // Add these required parameters
+  final String username;
+  final String role;
+
+  MainNavigation({
+    this.selectedIndex = 0,
+    required this.username,
+    required this.role,
+  }) : super(key: mainNavigationKey);
 
   @override
   _MainNavigationState createState() => _MainNavigationState();
@@ -19,21 +26,18 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   late int selectedIndex;
-
-  // List of pages corresponding to your routes
-  final List<Widget> _pages = [
-    HomePage(),
-    ListingPage(),
-    Schemes(),
-    FarmerAwareness(),
-    Weather(),
-  ];
+  // Add these variables
+  late String username;
+  late String role;
 
   @override
   void initState() {
     super.initState();
     // Initialize the selected index from the widget parameter
     selectedIndex = widget.selectedIndex;
+    // Initialize the username and role
+    username = widget.username;
+    role = widget.role;
   }
 
   @override
@@ -45,15 +49,43 @@ class _MainNavigationState extends State<MainNavigation> {
         selectedIndex = widget.selectedIndex;
       });
     }
+    // Update username and role if they change
+    if (widget.username != oldWidget.username) {
+      setState(() {
+        username = widget.username;
+      });
+    }
+    if (widget.role != oldWidget.role) {
+      setState(() {
+        role = widget.role;
+      });
+    }
   }
 
   // Public method to update the selected index
   void updateIndex(int index) {
-    if (index >= 0 && index < _pages.length) {
+    if (index >= 0 && index < _getPages().length) {
       setState(() {
         selectedIndex = index;
       });
     }
+  }
+
+  // Create a method to generate pages with current user info
+  List<Widget> _getPages() {
+    return [
+      farmer.HomePage(
+        username: username,
+        role: role,
+      ), // Pass parameters to HomePage
+      ListingPage(
+                username: username,
+        role: role,
+      ),
+      // Schemes(), // Make sure this exists
+      FarmerAwareness(),
+      Weather(),
+    ];
   }
 
   void _onItemTapped(int index) {
@@ -64,8 +96,11 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the pages with current user info
+    final List<Widget> pages = _getPages();
+
     return Scaffold(
-      body: _pages[selectedIndex],
+      body: pages[selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // Important for 5 items
         currentIndex: selectedIndex,
@@ -75,10 +110,10 @@ class _MainNavigationState extends State<MainNavigation> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Listing'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.agriculture),
-            label: 'Schemes',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.agriculture),
+          //   label: 'Schemes',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.lightbulb),
             label: 'Awareness',

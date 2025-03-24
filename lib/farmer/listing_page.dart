@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:gdg_solution/utils/farmer_view/Add_Listing.dart';
 import 'package:gdg_solution/utils/listing_list_tiles.dart';
 import 'package:gdg_solution/utils/crop_data_class.dart';
 
 class ListingPage extends StatefulWidget {
-  ListingPage({super.key});
+    final String username;
+  final String role;
+
+  ListingPage({super.key, required this.username, required this.role});
 
   @override
   State<ListingPage> createState() => _ListingPageState();
@@ -100,13 +104,18 @@ class _ListingPageState extends State<ListingPage> {
             final curr_crop = cropList[index];
             return ListingListTiles(
               isOffered: curr_crop.isOffered,
-              Crop_name: curr_crop.cropName,
-              government_price: curr_crop.govt_value,
-              Date_of_listing: curr_crop.date,
-              your_price: curr_crop.yoursValue,
+              cropName: curr_crop.cropName,
+              governmentPrice: curr_crop.govt_value,
+              dateOfListing: curr_crop.date,
+              yourPrice: curr_crop.yoursValue,
               quantity: curr_crop.quantity,
-              path_image: curr_crop.imagePath,
-              Offered_price: curr_crop.offeredValue,
+              pathImage: curr_crop.imagePath,
+              offeredPrice: curr_crop.offeredValue,
+              onDelete: () {
+                setState(() {
+                  cropList.removeAt(index);
+                });
+              },
             );
           },
         ),
@@ -115,7 +124,31 @@ class _ListingPageState extends State<ListingPage> {
         height: 70,
         width: 70,
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () async {
+            // Navigate to add listing page and wait for result
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AddListingPage()),
+            );
+
+            // If we got a result back, add the new crop data
+            if (result != null && result is Map<String, dynamic>) {
+              setState(() {
+                cropList.add(
+                  CropData(
+                    isOffered: false, // New listings start as not offered
+                    cropName: result['cropName'],
+                    date: result['dateOfListing'],
+                    yoursValue: result['yourPrice'],
+                    govt_value: result['governmentPrice'],
+                    quantity: result['quantity'],
+                    imagePath: result['pathImage'],
+                    offeredValue: 0.0, // Default value for new listings
+                  ),
+                );
+              });
+            }
+          },
           backgroundColor: Colors.green.shade400,
           foregroundColor: colors.onPrimary,
           shape: RoundedRectangleBorder(
