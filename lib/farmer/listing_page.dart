@@ -4,7 +4,7 @@ import 'package:gdg_solution/utils/listing_list_tiles.dart';
 import 'package:gdg_solution/utils/crop_data_class.dart';
 
 class ListingPage extends StatefulWidget {
-    final String username;
+  final String username;
   final String role;
 
   ListingPage({super.key, required this.username, required this.role});
@@ -65,7 +65,7 @@ class _ListingPageState extends State<ListingPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Your Listings", style: TextStyle(fontSize: 27)),
-                  Text("John Doe", style: TextStyle(fontSize: 16)),
+                  Text(widget.username, style: TextStyle(fontSize: 16)),
                 ],
               ),
               // DropdownButton<String>(
