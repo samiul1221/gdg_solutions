@@ -21,13 +21,13 @@ class _HomePageState extends State<HomePage>
   final List<String> Lang_Support = ["English", "Hindi"];
 
   late AnimationController _my_LottieAnimationController;
-  late String username;
-  late String role;
+  late String username_IN;
+  late String role_IN;
 
   @override
   void initState() {
-    username = widget.username;
-    role = widget.role;
+    username_IN = widget.username;
+    role_IN = widget.role;
     super.initState();
     _my_LottieAnimationController = AnimationController(
       vsync: this,
@@ -55,12 +55,14 @@ class _HomePageState extends State<HomePage>
     '/farmer_awareness_page',
     '/weather_page',
   ];
-  
-  late final List<Widget> _pages;
 
-  @override
-  void initState() {
-    username =
+  late List<Widget> _pages = [
+    ListingPage(username: username_IN, role: role_IN),
+    // Schemes(),
+    FarmerAwareness(),
+    Weather(),
+  ];
+
   void voice_assistant() {
     print("clicked");
   }
