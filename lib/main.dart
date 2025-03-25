@@ -5,6 +5,7 @@ import 'package:gdg_solution/farmer/farmer_awareness.dart';
 import 'package:gdg_solution/farmer/listing_page.dart';
 import 'package:gdg_solution/farmer/mainNav.dart' as nav;
 import 'package:gdg_solution/farmer/schemes.dart';
+import 'package:gdg_solution/farmer/seeds_and_tools.dart';
 import 'package:gdg_solution/farmer/weather.dart';
 import 'package:gdg_solution/firebase_options.dart';
 import 'package:gdg_solution/theme/theme.dart';
@@ -46,7 +47,7 @@ class MyApp extends StatelessWidget {
             role: args?['role'] ?? 'Guest',
           );
         },
-        // '/Scheme_page': (context) => Schemes(),
+        '/Seeds_and_tools': (context) => SeedsAndTools(),
         '/farmer_awareness_page': (context) => FarmerAwareness(),
         '/weather_page': (context) => Weather(),
       },

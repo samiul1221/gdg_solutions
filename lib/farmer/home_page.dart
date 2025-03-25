@@ -44,21 +44,20 @@ class _HomePageState extends State<HomePage>
 
   final List<String> tileName = [
     'Listings',
-    'Government Schemes',
+    'Seeds and Tools',
     'Farmer Awareness',
     'Weather',
   ];
 
   final List<String> pages = [
     '/listing_page',
-    '/Scheme_page',
+    '/Seeds_and_tools',
     '/farmer_awareness_page',
     '/weather_page',
   ];
 
   late List<Widget> _pages = [
     ListingPage(username: username_IN, role: role_IN),
-    // Schemes(),
     FarmerAwareness(),
     Weather(),
   ];
