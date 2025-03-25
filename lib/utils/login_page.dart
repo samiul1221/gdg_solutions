@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       await _auth.verifyPhoneNumber(
-        phoneNumber: _phoneController.text.trim(),
+        phoneNumber: "+91${_phoneController.text.trim()}",
         verificationCompleted: (PhoneAuthCredential credential) async {
           await _auth.signInWithCredential(credential);
           _navigateToHome(_usernameController.text.trim()); // Use username
@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
       builder:
           (ctx) => AlertDialog(
             title: Text('Error'),
-            content: Text(message),
+            content: Text("Something went wrong."),
             actions: [
               TextButton(
                 child: Text('Okay', style: TextStyle(color: Colors.black)),
@@ -244,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: 'Phone Number (with country code)',
+                          hintText: 'Phone Number',
                           hintStyle: TextStyle(color: Colors.grey.shade900),
                           prefixIcon: Icon(Icons.phone, color: Colors.teal),
                           border: OutlineInputBorder(

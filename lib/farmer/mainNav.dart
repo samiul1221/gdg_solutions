@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gdg_solution/farmer/farmer_awareness.dart';
 import 'package:gdg_solution/farmer/home_page.dart' as farmer;
 import 'package:gdg_solution/farmer/listing_page.dart';
+import 'package:gdg_solution/farmer/seeds_and_tools.dart';
 import 'package:gdg_solution/farmer/weather.dart';
 
 // Create a global key to access the navigation state from anywhere
@@ -78,11 +79,8 @@ class _MainNavigationState extends State<MainNavigation> {
         username: username,
         role: role,
       ), // Pass parameters to HomePage
-      ListingPage(
-                username: username,
-        role: role,
-      ),
-      // Schemes(), // Make sure this exists
+      ListingPage(username: username, role: role),
+      SeedsAndTools(), // Make sure this exists
       FarmerAwareness(),
       Weather(),
     ];
@@ -110,10 +108,10 @@ class _MainNavigationState extends State<MainNavigation> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Listing'),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.agriculture),
-          //   label: 'Schemes',
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.maps_home_work_outlined),
+            label: 'MarketPlace',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.lightbulb),
             label: 'Awareness',
