@@ -71,7 +71,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - lib/assets/animation_json/Listing.json
-    - lib/assets/animation_json/govt.json
+    - lib/assets/animation_json/shovel.json
     - lib/assets/animation_json/human_leaf.json
     - lib/assets/animation_json/weather.json
     - lib/assets/

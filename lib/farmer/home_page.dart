@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gdg_solution/farmer/farmer_awareness.dart';
 import 'package:gdg_solution/farmer/listing_page.dart';
 import 'package:gdg_solution/farmer/mainNav.dart';
+import 'package:gdg_solution/farmer/profile.dart';
 import 'package:gdg_solution/farmer/weather.dart';
 import 'package:lottie/lottie.dart';
 
@@ -37,7 +38,7 @@ class _HomePageState extends State<HomePage>
 
   final List<String> lottie_icon = [
     'lib/assets/animation_json/Listing.json',
-    'lib/assets/animation_json/govt.json',
+    'lib/assets/animation_json/shovel.json',
     'lib/assets/animation_json/human_leaf.json',
     'lib/assets/animation_json/weather.json',
   ];
@@ -116,7 +117,17 @@ class _HomePageState extends State<HomePage>
               ),
               Padding(
                 padding: const EdgeInsets.all(8),
-                child: Icon(Icons.person, size: 30),
+                child: IconButton(
+                  icon: Icon(Icons.person, size: 30),
+                  onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => FarmerProfile(),
+                    ),
+                  );
+                  },
+                ),
               ),
             ],
           ),

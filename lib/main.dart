@@ -4,7 +4,7 @@ import 'package:gdg_solution/farmer/farmer_awareness.dart';
 // import 'package:gdg_solution/farmer/home_page.dart' as farmer;
 import 'package:gdg_solution/farmer/listing_page.dart';
 import 'package:gdg_solution/farmer/mainNav.dart' as nav;
-import 'package:gdg_solution/farmer/schemes.dart';
+import 'package:gdg_solution/farmer/profile.dart';
 import 'package:gdg_solution/farmer/seeds_and_tools.dart';
 import 'package:gdg_solution/farmer/weather.dart';
 import 'package:gdg_solution/firebase_options.dart';
